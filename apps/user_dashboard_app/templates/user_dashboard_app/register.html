@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Register Page</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'user_dashboard_app/css/style.css' %}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body class="container-fluid">
+        <div class="row">
+            <h3 class="col-sm-2 offset-sm-1">Test App</h3>
+            <a href="/" class="col-sm-1 home_link">Home</a>
+
+            <a href="/login" class="offset-sm-5 col-sm-2 signin_link">Sign in</a>
+        </div>
+        <hr>
+
+        <div class="offset-sm-1 col-sm-10">
+            
+            <h2 class="">Register</h2>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    {% if 'register' in message.extra_tags %}
+                    <li {% if message.tags %} class="{{message.tags}}" {%endif%}>{{message}}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <form action="/register_validate" method="post" class="col-sm-5">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="email" class="">Email:</label>
+                    <input type="text" class="form-control" id="email" name="email"
+                    {% if messages %} value="{{request.session.temp_inputs.email}}" {%endif%}>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name" class="">First Name:</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" 
+                        {% if messages %} value="{{request.session.temp_inputs.first_name}}" {%endif%}>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name" class="">Last Name:</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name"
+                        {% if messages %} value="{{request.session.temp_inputs.last_name}}" {%endif%}>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="">Confirm PW:</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password">
+                </div>
+
+                <button type="submit" class="btn btn-success offset-sm-5">Register</button>
+            </form>
+
+            <p class="mt-30 offset-sm-1">
+                <a href="/login">
+                    <u>Already have an account? Login.</u>               
+                </a>
+            </p>
+        </div>
+    </body>
+</html>

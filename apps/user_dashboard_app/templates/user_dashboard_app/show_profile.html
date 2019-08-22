@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Wall</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'user_dashboard_app/css/style.css' %}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body class="container-fluid">
+        {% load tz %}
+        <div class="row">
+            <h3 class="col-sm-2 offset-sm-1">Test App</h3>
+            <a href="/dashboard/admin" class="col-sm-1 home_link">Dashboard</a>
+            <a href="/users/show/{{request.session.user_id}}" class="col-sm-1 offset-sm-1 home_link purple">Profile</a>
+
+            <a href="/logout" class="offset-sm-4 col-sm-2 signin_link">Log out</a>
+        </div>
+        <hr>
+
+        <div>
+            <h3>{{user.name}}</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    Registered at : 
+                </div>
+                <div class="col-sm-3">
+                    {{user.created_at|timezone:"America/Los_Angeles"}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                        User Id : 
+                </div>
+                <div class="col-sm-3">
+                        {{user.id}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                        Email address : 
+                </div>
+                <div class="col-sm-3">
+                        {{user.email}}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2">
+                        Description :
+                </div>
+                <div class="col-sm-3">
+                    {{user.description}}
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <form action="/send_message/{{user.id}}" method="post">
+                {% csrf_token %}
+                <div class="form-group mt-30">
+                    <label for="message">Leave a message for {{user.first_name}}</label>
+                    <textarea class="form-control col-sm-10" rows="3" id="message" name="message"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success offset-sm-9">Post</button>
+            </form>
+        </div>
+        {% for message in user.messages_received.all %}
+            <div class="col-sm-10 mt-30 p-3">
+                <a href="/users/show/{{message.user_to.id}}">
+                {{message.user_to.first_name}} {{message.user_to.last_name}} </a>
+                wrote ({{message.created_at|timezone:"America/Los_Angeles"}}) :
+                <div class="border p-3">
+                    {{message.content}}
+                </div>
+
+                {% for comment in message.comments.all %}
+                    <div class="mt-30 offset-sm-1">
+                        <a href="/users/show/{{message.user_to.id}}">
+                        {{comment.user_commented.first_name}} {{comment.user_commented.last_name}}</a>
+                        wrote ({{comment.created_at|timezone:"America/Los_Angeles"}}) :
+                        <div class="border p-3">
+                            {{comment.content}}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="mt-30 offset-sm-1">
+                    <form action="/send_comment/{{message.id}}/{{user.id}}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="comment"></label>
+                            <textarea class="form-control" rows="2" id="comment" name="comment">Write a comment</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-info offset-sm-11">Post</button>
+                    </form>
+                </div>
+            </div>
+
+        {% endfor %}
+        
+    </body>
+</html>

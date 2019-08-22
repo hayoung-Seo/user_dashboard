@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>User Dashboard</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'user_dashboard_app/css/style.css' %}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    </head>
+    <body class="container-fluid">
+        <div class="row">
+            <h3 class="col-sm-2 offset-sm-1">Test App</h3>
+            <a href="/dashboard" class="col-sm-1 home_link purple">Dashboard</a>
+            <a href="/users/show/{{request.session.user_id}}" class="col-sm-1 offset-sm-1 home_link">Profile</a>
+
+            <a href="/logout" class="offset-sm-4 col-sm-2 signin_link">Log out</a>
+        </div>
+        <hr>
+
+        <div class="col-sm-10 offset-sm-1 mt-30">
+            <div class="row">
+                <h2 class="col-sm-6">All Users</h2>
+            </div>
+            <div class="mt-30"></div>
+            
+            <table class="table border table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" class="border">ID</th>
+                        <th scope="col" class="border">Name</th>
+                        <th scope="col" class="border">Email</th>
+                        <th scope="col" class="border">Created_at</th>
+                        <th scope="col" class="border">User Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% load tz %}
+                    {% for user in users %}
+                        <tr>
+                            <td class="border">{{user.id}}</td>
+                            <td class="border">
+                                    <a href="/users/show/{{user.id}}">
+                                    {{user.first_name}} {{user.last_name}}
+                                    </a>
+                                </td>
+                            <td class="border">{{user.email}}</td>
+                            <td class="border">{{user.created_at|timezone:"America/Los_Angeles"}}</td>
+                            <td class="border">{{user.user_level}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
